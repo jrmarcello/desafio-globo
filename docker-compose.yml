@@ -1,0 +1,60 @@
+services:
+  api:
+    build: .
+    image: votacao-paredao-bbb-api:latest
+    container_name: votacao-paredao-bbb-api
+    env_file:
+      - .env
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: .
+    image: votacao-paredao-bbb-worker:latest
+    container_name: votacao-paredao-bbb-worker
+    entrypoint: ["/app/worker"]
+    env_file:
+      - .env
+    environment:
+      - DB_AUTO_MIGRATE=false
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16
+    container_name: votacao-paredao-bbb-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bbb}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bbb}
+      POSTGRES_DB: ${POSTGRES_DB:-bbb_votes}
+    ports:
+      - "5432:5432"
+    volumes:
+      - votacao-paredao-bbb-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bbb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: votacao-paredao-bbb-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  votacao-paredao-bbb-pgdata:

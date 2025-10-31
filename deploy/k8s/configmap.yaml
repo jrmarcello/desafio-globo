@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: votacao-paredao-bbb-config
+  namespace: votacao-paredao-bbb
+data:
+  APP_ENV: "production"
+  HTTP_ADDRESS: ":8080"
+  POSTGRES_HOST: "postgres-postgresql.votacao-paredao-bbb.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "bbb_votes"
+  REDIS_ADDR: "redis-master.votacao-paredao-bbb.svc.cluster.local:6379"
+  REDIS_DB: "0"
+  REDIS_QUEUE_PREFIX: "fila:votos"
+  REDIS_COUNTER_PREFIX: "contador"
+  ANTIFRAUDE_RATE_LIMIT_ENABLED: "true"
+  ANTIFRAUDE_RATE_LIMIT_MAX: "30"
+  ANTIFRAUDE_RATE_LIMIT_WINDOW: "60"
+  ANTIFRAUDE_RATE_LIMIT_PREFIX: "ratelimit"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: votacao-paredao-bbb-secrets
+  namespace: votacao-paredao-bbb
+type: Opaque
+stringData:
+  POSTGRES_USER: "bbb"
+  POSTGRES_PASSWORD: "bbb"
+  REDIS_PASSWORD: ""
+  CAPTCHA_PROVIDER: ""
+  CAPTCHA_SECRET: ""

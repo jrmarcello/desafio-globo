@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: votacao-paredao-bbb-api
+  namespace: votacao-paredao-bbb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: votacao-paredao-bbb-api
+  template:
+    metadata:
+      labels:
+        app: votacao-paredao-bbb-api
+    spec:
+      containers:
+        - name: api
+          image: votacao-paredao-bbb-api:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /app/api
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: votacao-paredao-bbb-config
+            - secretRef:
+                name: votacao-paredao-bbb-secrets
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: votacao-paredao-bbb-api
+  namespace: votacao-paredao-bbb
+spec:
+  selector:
+    app: votacao-paredao-bbb-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: votacao-paredao-bbb-api-pdb
+  namespace: votacao-paredao-bbb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: votacao-paredao-bbb-api
