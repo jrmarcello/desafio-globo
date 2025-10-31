@@ -1,0 +1,15 @@
+# Go modules
+vendor/
+.git/
+.gitignore
+
+# Binary outputs
+bin/
+*.exe
+*.out
+*.test
+
+# Local files
+.DS_Store
+.env
+.env.local
