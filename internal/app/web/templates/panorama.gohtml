@@ -1,0 +1,76 @@
+{{define "panorama_body"}}
+<section class="panel">
+    <h2>Panorama do paredão</h2>
+
+    {{if .Message}}
+    <div class="panel" style="border-color:#238636; background:#1f2329; margin-top:1rem;">
+        <strong>Sucesso!</strong>
+        <p>{{.Message}}</p>
+    </div>
+    {{end}}
+
+    {{if .Error}}
+    <div class="panel" style="border-color:#f85149; background:#1f2329; margin-top:1rem;">
+        <strong>Ops!</strong>
+        <p>{{.Error}}</p>
+    </div>
+    {{else}}
+    <p class="muted">Paredão: {{.ParedaoNome}}</p>
+
+    <div class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
+        <h3>Parciais por participante</h3>
+        {{if .Participantes}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Participante</th>
+                    <th>Total de votos</th>
+                    <th>Percentual</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Participantes}}
+                <tr>
+                    <td>{{.Nome}}</td>
+                    <td>{{.TotalDisplay}}</td>
+                    <td>{{.Percent}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        <p class="muted" style="margin-top:0.6rem;">Total geral: {{.TotalGeralDisplay}} votos</p>
+        {{else}}
+        <p class="muted">Ainda não há votos registrados neste paredão.</p>
+        {{end}}
+    </div>
+
+    <div class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
+        <h3>Histórico por hora</h3>
+        {{if .HoraError}}
+        <p class="muted">{{.HoraError}}</p>
+        {{else if .VotosHora}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Horário</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .VotosHora}}
+                <tr>
+                    <td>{{.Intervalo}}</td>
+                    <td>{{.TotalDisplay}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+        <p class="muted">Nenhum voto registrado por hora.</p>
+        {{end}}
+    </div>
+    {{end}}
+
+    <a href="/vote" class="btn btn-secondary" style="margin-top:1.5rem; display:inline-block;">Votar novamente</a>
+</section>
+{{end}}

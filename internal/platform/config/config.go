@@ -33,6 +33,7 @@ type Config struct {
 	AutoMigrate bool
 
 	WorkerMetricsAddress string
+	ConsultaToken        string
 }
 
 func Load() (Config, error) {
@@ -55,6 +56,7 @@ func Load() (Config, error) {
 		RateLimitKeyPrefix:     getEnv("ANTIFRAUDE_RATE_LIMIT_PREFIX", "ratelimit"),
 		AutoMigrate:            getEnvAsBool("DB_AUTO_MIGRATE", true),
 		WorkerMetricsAddress:   getEnv("WORKER_METRICS_ADDRESS", ":9090"),
+		ConsultaToken:          os.Getenv("CONSULTA_TOKEN"),
 	}
 
 	dbStr := getEnv("REDIS_DB", "0")

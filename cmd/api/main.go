@@ -12,6 +12,7 @@ import (
 
 	"github.com/marcelojr/desafio-globo/internal/app/httpapi"
 	"github.com/marcelojr/desafio-globo/internal/app/voting"
+	"github.com/marcelojr/desafio-globo/internal/app/web"
 	"github.com/marcelojr/desafio-globo/internal/domain"
 	"github.com/marcelojr/desafio-globo/internal/platform/antifraude"
 	"github.com/marcelojr/desafio-globo/internal/platform/clock"
@@ -90,6 +91,11 @@ func main() {
 	// HTTP expõe API, health check e métricas que o Prometheus coleta.
 	api := httpapi.New(servico, logger.L())
 	api.Register(mux)
+	frontend, err := web.New(servico, cfg.ConsultaToken)
+	if err != nil {
+		logger.Fatal("erro ao carregar templates", "err", err)
+	}
+	frontend.Register(mux)
 	mux.HandleFunc("/readyz", checker.ReadyHandler())
 	mux.Handle("/metrics", promhttp.Handler())
 

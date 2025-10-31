@@ -1,0 +1,55 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{.Title}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #0d1117; color: #f0f6fc; margin: 0; }
+        header { padding: 1.5rem; background: #161b22; border-bottom: 1px solid #30363d; }
+        header h1 { margin: 0; font-size: 1.5rem; }
+        nav a { color: #58a6ff; text-decoration: none; margin-right: 1rem; }
+        main { max-width: 960px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+        footer { text-align: center; padding: 1rem; color: #8b949e; font-size: 0.875rem; }
+        .panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .panel h2 { margin-top: 0; }
+        .btn { display: inline-block; padding: 0.6rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #238636; color: #fff; }
+        .btn-secondary { background: #30363d; color: #f0f6fc; }
+        .form-field { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.4rem; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #f0f6fc; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #30363d; }
+        th { color: #8b949e; font-weight: 600; }
+        .muted { color: #8b949e; font-size: 0.9rem; }
+        .card-grid { display: grid; gap: 1rem; }
+        @media (min-width: 640px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+            <h1>Votação BBB</h1>
+            <nav>
+                <a href="/vote">Votar</a>
+                <a href="/panorama">Panorama</a>
+                <a href="/consulta">Consulta</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        {{if .Content}}
+            {{.Content}}
+        {{else}}
+            <p class="muted">Nenhum conteúdo disponível.</p>
+        {{end}}
+    </main>
+    <footer>
+        <p>Fluxo simplificado para o desafio BBB — backend em Go</p>
+    </footer>
+</body>
+</html>
+{{end}}

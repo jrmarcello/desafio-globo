@@ -1,0 +1,38 @@
+{{define "vote_body"}}
+<section class="panel">
+    <h2>Vote no seu participante favorito</h2>
+    <p class="muted">Escolha um participante para registrar o voto. Após confirmar, você verá o panorama atualizado.</p>
+
+    {{if .Error}}
+    <div class="panel" style="border-color:#f85149; background:#1f2329; margin-top:1rem;">
+        <strong>Ops!</strong>
+        <p>{{.Error}}</p>
+    </div>
+    {{end}}
+
+    {{if .Paredoes}}
+        {{range .Paredoes}}
+        <article class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
+            <h3>{{.Nome}}</h3>
+            {{if .Descricao}}<p class="muted">{{.Descricao}}</p>{{end}}
+            <p class="muted">
+                {{if .Inicio}}Início: {{.Inicio}}{{end}}
+                {{if and .Inicio .Fim}} · {{end}}
+                {{if .Fim}}Fim: {{.Fim}}{{end}}
+            </p>
+
+            <form method="post" style="margin-top:1rem;">
+                <input type="hidden" name="paredao_id" value="{{.ID}}">
+                <div class="card-grid">
+                    {{range .Participantes}}
+                    <button type="submit" class="btn btn-primary" name="participante_id" value="{{.ID}}">Votar em {{.Nome}}</button>
+                    {{end}}
+                </div>
+            </form>
+        </article>
+        {{end}}
+    {{else}}
+    <p class="muted" style="margin-top:1.5rem;">Nenhum paredão ativo no momento.</p>
+    {{end}}
+</section>
+{{end}}
