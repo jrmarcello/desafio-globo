@@ -69,6 +69,7 @@ Roteiro para guiar testes manuais. Ele reúne as sequências que usei para valid
 9. Derrube tudo ao final: `docker compose down -v`
 
 ## Frontend (SSR)
+
 - Após subir o stack (`docker compose up -d --build`), um paredão de demonstração já estará disponível.
 - Acesse `/vote` para conferir o paredão ativo e os botões de voto.
 - Submeter o formulário direciona para `/panorama?paredao_id=...`, onde o comprovante e as parciais são mostrados.
@@ -117,7 +118,7 @@ Requerimentos: Docker (Desktop), `jq` e acesso à imagem `grafana/k6`.
    kubectl apply -f deploy/k8s/configmap.yaml -f deploy/k8s/secret.yaml
    ```
 
-5. Suba os deployments e service (2 réplicas cada):
+5. Suba os deployments e service:
 
    ```bash
    kubectl apply -f deploy/k8s/deployment-api.yaml -f deploy/k8s/deployment-worker.yaml -f deploy/k8s/service-api.yaml
@@ -191,7 +192,10 @@ Requerimentos: Docker (Desktop), `jq` e acesso à imagem `grafana/k6`.
           curl -s -o /dev/null -w "%{http_code}\\n" \
             -X POST http://votacao-paredao-bbb-api.votacao-paredao-bbb.svc.cluster.local:8080/votos \
             -H "Content-Type: application/json" \
-            -d "{\\\"paredao_id\\\":\\\"<ID_do_paredao>\\\",\\\"participante_id\\\":\\\"<ID_do_participante>\\\"}"; \
+            -d '{
+              "paredao_id": "<ID_do_paredao>",
+              "participante_id": "<ID_do_participante>"
+            }'; \
         done'
     ```
 

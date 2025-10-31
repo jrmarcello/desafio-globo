@@ -14,12 +14,6 @@ Crie seu arquivo de configuração:
 cp .env.example .env
 ```
 
-As migrations rodam automaticamente quando a API inicia (via gormigrate). Se preferir acionar o SQL “na mão”, utilize:
-
-```bash
-cat migrations/0001_init.sql | docker compose exec -T postgres psql -U ${POSTGRES_USER:-bbb} -d ${POSTGRES_DB:-bbb_votes}
-```
-
 ## Como rodar
 
 ### Go puro
@@ -40,9 +34,9 @@ make logs-worker  # acompanha o worker
 make docker-down  # encerra o stack
 ```
 
-Use `HTTP_PORT` no `.env` para mudar a porta exposta (padrão 8080).
+As migrations rodam automaticamente quando a API inicia (via gormigrate).
 
-### Observabilidade e testes
+### Testes e Observabilidade
 
 - `go test ./...` para a suíte unitária.
 - `make perf-test` roda o cenário de carga com k6 (~1000 req/s por 30s).
@@ -65,31 +59,11 @@ O rate limit em Redis fica ativo por padrão (`ANTIFRAUDE_RATE_LIMIT_ENABLED=tru
 
 Temos manifests simples em `deploy/k8s/` pensados para um cluster kind com Postgres/Redis provisionados via Helm.
 
-Atalho completo:
-
 ```bash
 make deploy-kind   # cria cluster, instala dependências, builda e aplica manifests, roda smoke test
 make kind-delete   # remove o cluster
 ```
 
-Se preferir executar passo a passo:
-
-1. `kind create cluster --name votacao-paredao-bbb --config deploy/k8s/kind-cluster.yaml`
-2. `kubectl apply -f deploy/k8s/namespace.yaml`
-3. Instale Postgres e Redis (`helm install postgres ...`, `helm install redis ...`)
-4. `kind load docker-image votacao-paredao-bbb-api:latest --name votacao-paredao-bbb`
-5. `kind load docker-image votacao-paredao-bbb-worker:latest --name votacao-paredao-bbb`
-6. `kubectl apply -f deploy/k8s/configmap.yaml`
-7. `kubectl apply -f deploy/k8s/deployment-api.yaml -f deploy/k8s/deployment-worker.yaml`
-8. `kubectl run curl --rm --restart=Never -n votacao-paredao-bbb --image=curlimages/curl -- curl -sS http://votacao-paredao-bbb-api.votacao-paredao-bbb.svc.cluster.local:8080/readyz`
-9. `kind delete cluster --name votacao-paredao-bbb` para limpar quando terminar.
-
 ## CI/CD
 
 O workflow `CI` (GitHub Actions) executa lint (`golangci-lint`), testes, build e um job opcional de cargas (`make perf-test` via `workflow_dispatch`). A cobertura é publicada como artefato (`coverage.out`). Targets de CD local (`make deploy-kind`) servem como base para evoluir em direção ao publish das imagens/manifestos.
-
-## Referências rápidas
-
-- Plano de execução: `docs/plano-execucao.md`
-- Registro de decisões e resumo de deploy/testes: `COMMENTS.md`
-- Roteiro de testes manuais (Docker + k6 + Kubernetes): `docs/roteiro-testes.md`
