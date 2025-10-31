@@ -115,7 +115,10 @@ kind-rollout:
 
 kind-smoke:
 	kubectl delete pod curl-smoke -n $(K8S_NAMESPACE) --ignore-not-found
-	kubectl run curl-smoke --rm --restart=Never --namespace $(K8S_NAMESPACE) --image=curlimages/curl \
-		--command -- curl -sS -m 5 http://votacao-paredao-bbb-api.$(K8S_NAMESPACE).svc.cluster.local:8080/readyz
+	kubectl run curl-smoke --restart=Never --namespace $(K8S_NAMESPACE) --image=curlimages/curl \
+		--command -- /bin/sh -c "curl -sS -m 5 http://votacao-paredao-bbb-api.$(K8S_NAMESPACE).svc.cluster.local:8080/readyz"
+	kubectl wait --for=condition=Ready --timeout=20s pod/curl-smoke -n $(K8S_NAMESPACE) >/dev/null 2>&1 || true
+	kubectl logs curl-smoke -n $(K8S_NAMESPACE)
+	kubectl delete pod curl-smoke -n $(K8S_NAMESPACE) --ignore-not-found
 
 deploy-kind: kind-create kind-build-images kind-load-images kind-deps kind-apply kind-rollout kind-smoke
