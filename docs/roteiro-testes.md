@@ -69,7 +69,7 @@ Roteiro para guiar testes manuais. Ele reúne as sequências que usei para valid
 9. Derrube tudo ao final: `docker compose down -v`
 
 ## Frontend (SSR)
-- Após subir o stack (`docker compose up -d --build`), crie um paredão via `POST /paredoes` (ex.: usando `curlimages/curl` na rede `desafio-globo_default`).
+- Após subir o stack (`docker compose up -d --build`), um paredão de demonstração já estará disponível.
 - Acesse `/vote` para conferir o paredão ativo e os botões de voto.
 - Submeter o formulário direciona para `/panorama?paredao_id=...`, onde o comprovante e as parciais são mostrados.
 - A `/consulta` pede o token configurado em `CONSULTA_TOKEN`; após informar, o painel exibe totais por participante e por hora.

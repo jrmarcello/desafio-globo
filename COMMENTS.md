@@ -9,6 +9,7 @@
 - Criei o pipeline simples mas funcional de CI em GitHub Actions com lint, testes, race/coverage e um gatilho manual para carga. O CD local fica nos targets do Makefile (`deploy-kind`, `kind-delete`).
 - Implementei a base de telemetria (logs estruturados, `/metrics`, `/readyz`), já pensando em evolução futura.
 - Para o frontend, optei por páginas renderizadas com templates Go (SSR simples) servidas pela própria API.
+- A migração inicial já cria um paredão de demonstração; com isso removi o endpoint público de criação e concentrei o fluxo em votação/consulta.
 
 ## Deploy, observabilidade e testes
 

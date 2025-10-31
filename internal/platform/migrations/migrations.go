@@ -3,11 +3,13 @@ package migrations
 
 import (
 	"fmt"
+	"time"
 
 	gormigrate "github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 
 	"github.com/marcelojr/desafio-globo/internal/domain"
+	"github.com/marcelojr/desafio-globo/internal/platform/ids"
 )
 
 func Run(db *gorm.DB) error {
@@ -24,6 +26,44 @@ func Run(db *gorm.DB) error {
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.Migrator().DropTable("votos", "participantes", "paredoes")
+			},
+		},
+		{
+			ID: "202410310002_seed_demo_paredao",
+			Migrate: func(tx *gorm.DB) error {
+				var count int64
+				if err := tx.Model(&domain.Paredao{}).Count(&count).Error; err != nil {
+					return err
+				}
+				if count > 0 {
+					return nil
+				}
+
+				now := time.Now().UTC()
+				gen := ids.NewGenerator()
+				paredaoID := domain.ParedaoID(gen.New())
+				participantes := []domain.Participante{
+					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Alice", CriadoEm: now, AtualizadoEm: now},
+					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Bruno", CriadoEm: now, AtualizadoEm: now},
+					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Carla", CriadoEm: now, AtualizadoEm: now},
+				}
+
+				seed := domain.Paredao{
+					ID:            paredaoID,
+					Nome:          "Paredão de demonstração",
+					Descricao:     "Seed inicial para testes do frontend",
+					Inicio:        now.Add(-1 * time.Hour),
+					Fim:           now.Add(72 * time.Hour),
+					Participantes: participantes,
+					Ativo:         true,
+					CriadoEm:      now,
+					AtualizadoEm:  now,
+				}
+
+				return tx.Create(&seed).Error
+			},
+			Rollback: func(tx *gorm.DB) error {
+				return nil
 			},
 		},
 	})

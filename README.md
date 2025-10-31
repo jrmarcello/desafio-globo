@@ -55,7 +55,7 @@ Use `HTTP_PORT` no `.env` para mudar a porta exposta (padrão 8080).
   - `/vote`: lista o paredão ativo e permite enviar o voto (POST). Após o envio, o usuário é redirecionado para `/panorama`.
   - `/panorama`: mostra o comprovante, parciais por participante e totais por hora do paredão selecionado.
   - `/consulta`: painel para a produção com agregados; exige o token definido em `CONSULTA_TOKEN` (adicione no `.env`). Depois da validação, a página fica liberada via cookie `consulta-auth`.
-- Para validar manualmente: `docker compose up -d --build`, crie um paredão (`POST /paredoes`) e navegue nas rotas acima (via navegador ou `curl` dentro da rede `desafio-globo_default`).
+- Para validar manualmente: `docker compose up -d --build` e acesse diretamente `/vote` (um paredão de demonstração é criado automaticamente na migração). Se desejar outro paredão, ajuste a seed ou insira manualmente via banco.
 
 ### Antifraude
 

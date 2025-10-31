@@ -7,7 +7,6 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/marcelojr/desafio-globo/internal/app/voting"
 	"github.com/marcelojr/desafio-globo/internal/domain"
@@ -28,7 +27,7 @@ func New(service *voting.Service, logger *slog.Logger) *API {
 func (a *API) Register(mux *http.ServeMux) {
 	// Mantemos as rotas centralizadas para facilitar testes e reuso em servidores diferentes.
 	mux.HandleFunc("/healthz", a.handleHealthz)
-	mux.HandleFunc("/paredoes", a.handleParedoes)
+	mux.HandleFunc("/paredoes", a.listarParedoes)
 	mux.HandleFunc("/votos", a.handleVotos)
 	mux.HandleFunc("/paredoes/", a.handleParedaoDetalhes)
 }
@@ -36,17 +35,6 @@ func (a *API) Register(mux *http.ServeMux) {
 func (a *API) handleHealthz(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("ok"))
-}
-
-func (a *API) handleParedoes(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodGet:
-		a.listarParedoes(w, r)
-	case http.MethodPost:
-		a.criarParedao(w, r)
-	default:
-		http.Error(w, "metodo nao suportado", http.StatusMethodNotAllowed)
-	}
 }
 
 func (a *API) handleParedaoDetalhes(w http.ResponseWriter, r *http.Request) {
@@ -86,69 +74,6 @@ func (a *API) listarParedoes(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responderJSON(w, http.StatusOK, resultado)
-}
-
-type criarParedaoRequest struct {
-	Nome          string                     `json:"nome"`
-	Descricao     string                     `json:"descricao"`
-	Inicio        string                     `json:"inicio"`
-	Fim           string                     `json:"fim"`
-	Participantes []criarParticipanteRequest `json:"participantes"`
-}
-
-type criarParticipanteRequest struct {
-	Nome    string `json:"nome"`
-	FotoURL string `json:"foto_url"`
-}
-
-func (a *API) criarParedao(w http.ResponseWriter, r *http.Request) {
-	var req criarParedaoRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		metrics.ObserveVoteRequest("invalid_payload")
-		a.logger.Warn("payload invalido ao criar paredao", "err", err)
-		http.Error(w, "payload invalido", http.StatusBadRequest)
-		return
-	}
-
-	inicio, err := parseTime(req.Inicio)
-	if err != nil {
-		metrics.ObserveVoteRequest("invalid_payload")
-		a.logger.Warn("inicio invalido", "valor", req.Inicio, "err", err)
-		http.Error(w, "inicio invalido (usar RFC3339)", http.StatusBadRequest)
-		return
-	}
-	fim, err := parseTime(req.Fim)
-	if err != nil {
-		metrics.ObserveVoteRequest("invalid_payload")
-		a.logger.Warn("fim invalido", "valor", req.Fim, "err", err)
-		http.Error(w, "fim invalido (usar RFC3339)", http.StatusBadRequest)
-		return
-	}
-
-	participantes := make([]domain.Participante, len(req.Participantes))
-	for i, part := range req.Participantes {
-		participantes[i] = domain.Participante{
-			Nome:    strings.TrimSpace(part.Nome),
-			FotoURL: strings.TrimSpace(part.FotoURL),
-		}
-	}
-
-	paredao := domain.Paredao{
-		Nome:      strings.TrimSpace(req.Nome),
-		Descricao: strings.TrimSpace(req.Descricao),
-		Inicio:    inicio,
-		Fim:       fim,
-	}
-
-	created, err := a.service.CriarParedao(r.Context(), paredao, participantes)
-	if err != nil {
-		a.logger.Error("erro ao criar paredao", "err", err)
-		responderErro(w, err)
-		return
-	}
-
-	responderJSON(w, http.StatusCreated, created)
-	a.logger.Info("paredao criado", "id", created.ID, "participantes", len(created.Participantes))
 }
 
 type votoRequest struct {
@@ -250,11 +175,4 @@ func statusFromError(err error) string {
 	default:
 		return "error"
 	}
-}
-
-func parseTime(value string) (time.Time, error) {
-	if strings.TrimSpace(value) == "" {
-		return time.Time{}, nil
-	}
-	return time.Parse(time.RFC3339, value)
 }
