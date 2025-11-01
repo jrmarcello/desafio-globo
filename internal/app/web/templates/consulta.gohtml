@@ -3,13 +3,13 @@
 <section class="panel">
     <h2>Autenticação necessária</h2>
     <p class="muted">Informe o token fornecido pela produção para acessar os dados consolidados.</p>
-    <form method="post" style="margin-top:1rem;">
+    <form method="post" class="mt-4">
         <div class="form-field">
             <label for="token">Token</label>
             <input type="password" id="token" name="token" required>
         </div>
         <button type="submit" class="btn btn-primary">Entrar</button>
-        {{if .TokenError}}<p class="muted" style="color:#f85149; margin-top:1rem;">Token inválido. Tente novamente.</p>{{end}}
+        {{if .TokenError}}<p class="text-red-500 mt-4">Token inválido. Tente novamente.</p>{{end}}
     </form>
 </section>
 {{else}}
@@ -18,14 +18,14 @@
     <p class="muted">Consolidado de votos por paredão, participante e hora.</p>
 
     {{if .Error}}
-    <div class="panel" style="border-color:#f85149; background:#1f2329; margin-top:1rem;">
+    <div class="panel border-red-600 bg-gray-800 mt-4">
         <strong>Ops!</strong>
         <p>{{.Error}}</p>
     </div>
     {{else}}
         {{if .Paredoes}}
             {{range .Paredoes}}
-            <article class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
+            <article class="panel mt-6 border-gray-600 bg-gray-800">
                 <h3>{{.Nome}}</h3>
                 <p class="muted">Total geral: {{.TotalDisplay}} votos</p>
 

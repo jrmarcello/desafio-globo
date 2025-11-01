@@ -10,6 +10,7 @@
 - Implementei a base de telemetria (logs estruturados, `/metrics`, `/readyz`), já pensando em evolução futura.
 - Para o frontend, optei por páginas renderizadas com templates Go (SSR simples) servidas pela própria API.
 - A migração inicial já cria um paredão de demonstração; com isso removi o endpoint público de criação e concentrei o fluxo em votação/consulta.
+- Adotei Tailwind CSS via CDN para modernizar a interface web sem complicar o build. Ele acelera o desenvolvimento com classes utilitárias, garante consistência visual e responsividade built-in, ideal para um desafio backend. Trade-offs: depende de CDN (risco de indisponibilidade) e carrega CSS extra (~300KB), mas para protótipo é perfeito — em produção, optaria por build otimizado com purging.
 
 ## Deploy, observabilidade e testes
 

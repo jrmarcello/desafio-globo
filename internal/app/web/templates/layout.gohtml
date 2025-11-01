@@ -5,82 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{.Title}}</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css">
     <style>
-        body { font-family: Arial, sans-serif; background: #0d1117; color: #f0f6fc; margin: 0; }
-        header { padding: 1.5rem; background: #161b22; border-bottom: 1px solid #30363d; }
-        header h1 { margin: 0; font-size: 1.5rem; }
-        nav a { color: #58a6ff; text-decoration: none; margin-right: 1rem; }
-        main { max-width: 960px; margin: 0 auto; padding: 2rem 1rem 4rem; }
-        footer { text-align: center; padding: 1rem; color: #8b949e; font-size: 0.875rem; }
-        .panel { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .panel h2 { margin-top: 0; }
-        .btn { display: inline-block; padding: 0.6rem 1.2rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; }
-        .btn-primary { background: #238636; color: #fff; }
-        .btn-secondary { background: #30363d; color: #f0f6fc; }
-        .form-field { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.4rem; font-weight: 600; }
-        input, textarea, select { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #f0f6fc; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #30363d; }
-        th { color: #8b949e; font-weight: 600; }
-        .muted { color: #8b949e; font-size: 0.9rem; }
-        .card-grid { display: grid; gap: 1.5rem; }
-        @media (min-width: 640px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-        @media (min-width: 900px) { .card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-        .participante-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 16px;
-            padding: 1.2rem 1rem 1.5rem 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            width: 220px;
-            margin: 0 auto;
-        }
-        .participante-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #30363d;
-            object-fit: cover;
-            margin-bottom: 0.8rem;
-            display: block;
-        }
-        .participante-nome {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #f0f6fc;
-            margin-bottom: 0.7rem;
-            text-align: center;
-        }
-        .btn-eliminar {
-            background: #f85149;
-            color: #fff;
-            margin-top: 0.5rem;
-        }
+        .panel { @apply bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6; }
+        .panel h2 { @apply mt-0; }
+        .btn { @apply inline-block px-3 py-2 rounded border-none cursor-pointer font-semibold; }
+        .btn-primary { @apply bg-green-600 text-white; }
+        .btn-secondary { @apply bg-gray-600 text-gray-100; }
+        .btn-eliminar { @apply bg-red-600 text-white mt-2; }
+        .form-field { @apply mb-4; }
+        label { @apply block mb-1 font-semibold; }
+        input, textarea, select { @apply w-full px-3 py-2 rounded border border-gray-600 bg-gray-900 text-gray-100; }
+        table { @apply w-full border-collapse; }
+        th, td { @apply px-2 py-2 text-left border-b border-gray-600; }
+        th { @apply text-gray-400 font-semibold; }
+        .muted { @apply text-gray-400 text-sm; }
+        .card-grid { @apply grid gap-6; }
+        .participante-card { @apply flex flex-col items-center bg-gray-800 border border-gray-700 rounded-2xl p-4 w-56 mx-auto shadow-md; }
+        .participante-avatar { @apply w-20 h-20 rounded-full object-cover mb-3; }
+        .participante-nome { @apply text-lg font-semibold text-gray-100 mb-2 text-center; }
+        @media (min-width: 640px) { .card-grid { @apply grid-cols-2; } }
+        @media (min-width: 900px) { .card-grid { @apply grid-cols-3; } }
     </style>
 </head>
-<body>
-    <header>
-        <div style="max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
-            <h1>Votação BBB</h1>
+<body class="font-sans bg-gray-900 text-gray-100 m-0">
+    <header class="px-6 py-6 bg-gray-800 border-b border-gray-600">
+        <div class="max-w-4xl mx-auto flex items-center justify-between flex-wrap gap-2">
+            <h1 class="m-0 text-xl">Votação BBB</h1>
             <nav>
-                <a href="/vote">Votar</a>
-                <a href="/consulta">Consulta</a>
+                <a href="/vote" class="text-blue-400 no-underline mr-4">Votar</a>
+                <a href="/consulta" class="text-blue-400 no-underline">Consulta</a>
             </nav>
         </div>
     </header>
-    <main>
+    <main class="max-w-4xl mx-auto px-4 py-8 pb-16">
         {{if .Content}}
             {{.Content}}
         {{else}}
             <p class="muted">Ops! Nenhum conteúdo disponível.</p>
         {{end}}
     </main>
-    <footer>
+    <footer class="text-center py-4 text-gray-400 text-sm">
         <p>Desafio votação BBB — backend em Go</p>
     </footer>
 </body>

@@ -3,7 +3,7 @@
     <h2>Panorama do paredão</h2>
 
     {{if .Message}}
-    <div class="panel" style="border-color:#238636; background:#1f2329; margin-top:1rem;">
+    <div class="panel border-green-600 bg-gray-800 mt-4">
         <strong>Sucesso!</strong>
         <p>{{.Message}}</p>
     </div>
@@ -15,14 +15,14 @@
     {{end}}
 
     {{if .Error}}
-    <div class="panel" style="border-color:#f85149; background:#1f2329; margin-top:1rem;">
+    <div class="panel border-red-600 bg-gray-800 mt-4">
         <strong>Ops!</strong>
         <p>{{.Error}}</p>
     </div>
     {{else}}
     <p class="muted">Paredão: {{.ParedaoNome}}</p>
 
-    <div class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
+    <div class="panel mt-6 border-gray-600 bg-gray-800">
         <h3>Parciais por participante</h3>
         {{if .Participantes}}
         <table>
