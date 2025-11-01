@@ -62,15 +62,15 @@ func Run(db *gorm.DB) error {
 				}
 
 				seed := domain.Paredao{
-					ID:           paredaoID,
-					Nome:         paredaoNome,
-					Descricao:    "Paredão de demonstração criado automaticamente",
-					Inicio:       now.Add(-1 * time.Hour),
-					Fim:          now.Add(72 * time.Hour),
+					ID:            paredaoID,
+					Nome:          paredaoNome,
+					Descricao:     "Paredão de demonstração criado automaticamente",
+					Inicio:        now.Add(-1 * time.Hour),
+					Fim:           now.Add(72 * time.Hour),
 					Participantes: participantes,
-					Ativo:        true,
-					CriadoEm:     now,
-					AtualizadoEm: now,
+					Ativo:         true,
+					CriadoEm:      now,
+					AtualizadoEm:  now,
 				}
 
 				return tx.Create(&seed).Error

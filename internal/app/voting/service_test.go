@@ -419,3 +419,205 @@ type staticClock struct {
 func (s *staticClock) Agora() time.Time {
 	return s.now
 }
+
+// TestServiceListarAtivos testa listagem de paredões ativos
+func TestServiceListarAtivos(t *testing.T) {
+	deps := newServiceDeps() // Novo deps = novo repositório limpo
+	service := NewService(
+		deps.paredaoRepo,
+		deps.participanteRepo,
+		deps.votoRepo,
+		deps.contador,
+		deps.queue,
+		deps.antifraude,
+		deps.clock,
+		deps.idGen,
+	)
+
+	// Cria paredão ativo
+	paredaoAtivo, err := service.CriarParedao(context.Background(), domain.Paredao{
+		Nome:   "Paredão Ativo",
+		Inicio: deps.baseTime,
+		Fim:    deps.baseTime.Add(2 * time.Hour),
+		Ativo:  true,
+	}, []domain.Participante{
+		{Nome: "Alice"},
+		{Nome: "Bruno"},
+	})
+	if err != nil {
+		t.Fatalf("erro criando paredao ativo: %v", err)
+	}
+
+	// Cria paredão inativo
+	_, err = service.CriarParedao(context.Background(), domain.Paredao{
+		Nome:   "Paredão Inativo",
+		Inicio: deps.baseTime,
+		Fim:    deps.baseTime.Add(2 * time.Hour),
+		Ativo:  false,
+	}, []domain.Participante{
+		{Nome: "Carlos"},
+		{Nome: "Diana"},
+	})
+	if err != nil {
+		t.Fatalf("erro criando paredao inativo: %v", err)
+	}
+
+	// Lista apenas ativos
+	ativos, err := service.ListarAtivos(context.Background())
+	if err != nil {
+		t.Fatalf("erro listando ativos: %v", err)
+	}
+
+	if len(ativos) < 1 {
+		t.Fatalf("esperava ao menos 1 paredao ativo, veio %d", len(ativos))
+	}
+
+	// Verifica que encontrou o paredão que criamos
+	found := false
+	for _, p := range ativos {
+		if p.ID == paredaoAtivo.ID {
+			found = true
+			// Verifica que o paredão ativo tem os participantes carregados
+			if len(p.Participantes) != 2 {
+				t.Errorf("esperava 2 participantes no paredão ativo, veio %d", len(p.Participantes))
+			}
+			break
+		}
+	}
+
+	if !found {
+		t.Error("paredao ativo criado não foi encontrado na listagem")
+	}
+}
+
+// TestServiceTotaisPorHora testa agregação de votos por hora
+func TestServiceTotaisPorHora(t *testing.T) {
+	deps := newServiceDeps()
+	service := NewService(
+		deps.paredaoRepo,
+		deps.participanteRepo,
+		deps.votoRepo,
+		deps.contador,
+		deps.queue,
+		deps.antifraude,
+		deps.clock,
+		deps.idGen,
+	)
+
+	paredao, err := service.CriarParedao(context.Background(), domain.Paredao{
+		Nome:   "Paredão Teste",
+		Inicio: deps.baseTime,
+		Fim:    deps.baseTime.Add(24 * time.Hour),
+		Ativo:  true,
+	}, []domain.Participante{
+		{Nome: "Alice"},
+		{Nome: "Bruno"},
+	})
+	if err != nil {
+		t.Fatalf("erro criando paredao: %v", err)
+	}
+
+	// Registra votos
+	for i := 0; i < 3; i++ {
+		voto := domain.Voto{
+			ParedaoID:      paredao.ID,
+			ParticipanteID: paredao.Participantes[0].ID,
+			OrigemIP:       "127.0.0.1",
+			UserAgent:      "test",
+		}
+		if err := service.RegistrarVoto(context.Background(), voto); err != nil {
+			t.Fatalf("erro registrando voto: %v", err)
+		}
+	}
+
+	// Persiste votos da fila
+	for _, v := range deps.queue.Drain() {
+		if err := deps.votoRepo.Registrar(context.Background(), v); err != nil {
+			t.Fatalf("erro persistindo voto: %v", err)
+		}
+	}
+
+	// Busca totais por hora
+	totais, err := service.TotaisPorHora(context.Background(), paredao.ID)
+	if err != nil {
+		t.Fatalf("erro buscando totais por hora: %v", err)
+	}
+
+	if len(totais) == 0 {
+		t.Error("esperava ao menos uma entrada de total por hora")
+	}
+}
+
+// TestServiceRegistrarVotoComValidacoes testa validações de voto
+func TestServiceRegistrarVotoComValidacoes(t *testing.T) {
+	deps := newServiceDeps()
+	service := NewService(
+		deps.paredaoRepo,
+		deps.participanteRepo,
+		deps.votoRepo,
+		deps.contador,
+		deps.queue,
+		deps.antifraude,
+		deps.clock,
+		deps.idGen,
+	)
+
+	paredao, err := service.CriarParedao(context.Background(), domain.Paredao{
+		Nome:   "Paredão",
+		Inicio: deps.baseTime.Add(-1 * time.Hour),
+		Fim:    deps.baseTime.Add(1 * time.Hour),
+		Ativo:  true,
+	}, []domain.Participante{
+		{Nome: "Alice"},
+		{Nome: "Bruno"},
+	})
+	if err != nil {
+		t.Fatalf("erro criando paredao: %v", err)
+	}
+
+	tests := []struct {
+		name    string
+		voto    domain.Voto
+		wantErr bool
+	}{
+		{
+			name: "voto válido",
+			voto: domain.Voto{
+				ParedaoID:      paredao.ID,
+				ParticipanteID: paredao.Participantes[0].ID,
+				OrigemIP:       "127.0.0.1",
+				UserAgent:      "test",
+			},
+			wantErr: false,
+		},
+		{
+			name: "paredão inexistente",
+			voto: domain.Voto{
+				ParedaoID:      domain.ParedaoID("inexistente"),
+				ParticipanteID: paredao.Participantes[0].ID,
+				OrigemIP:       "127.0.0.1",
+				UserAgent:      "test",
+			},
+			wantErr: true,
+		},
+		{
+			name: "participante inexistente",
+			voto: domain.Voto{
+				ParedaoID:      paredao.ID,
+				ParticipanteID: domain.ParticipanteID("inexistente"),
+				OrigemIP:       "127.0.0.1",
+				UserAgent:      "test",
+			},
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := service.RegistrarVoto(context.Background(), tt.voto)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("RegistrarVoto() erro = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
