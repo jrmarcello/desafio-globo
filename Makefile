@@ -87,6 +87,8 @@ docker-clean:
 clean:
 	rm -rf $(BIN_DIR)
 
+# ==================== Kubernetes com Kind ====================
+
 kind-create:
 	kind create cluster --name $(KIND_CLUSTER_NAME) --config $(KIND_CLUSTER_CONFIG)
 
