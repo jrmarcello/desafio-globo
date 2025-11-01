@@ -20,4 +20,6 @@ COPY --from=build /out/worker /app/worker
 
 EXPOSE 8080
 
+ENV TZ=America/Sao_Paulo
+
 ENTRYPOINT ["/app/api"]

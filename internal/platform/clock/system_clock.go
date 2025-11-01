@@ -9,5 +9,5 @@ func NewSystemClock() SystemClock {
 }
 
 func (SystemClock) Agora() time.Time {
-	return time.Now().UTC()
+	return time.Now().Local()
 }

@@ -39,7 +39,7 @@ func Run(db *gorm.DB) error {
 					return nil
 				}
 
-				now := time.Now().UTC()
+				now := time.Now().Local()
 				gen := ids.NewGenerator()
 				paredaoID := domain.ParedaoID(gen.New())
 				participantes := []domain.Participante{
@@ -50,7 +50,7 @@ func Run(db *gorm.DB) error {
 
 				seed := domain.Paredao{
 					ID:        paredaoID,
-					Nome:      "Paredão 1 BBB",
+					Nome:      "Paredão BBB",
 					Descricao: "Paredão padrão para setup inicial",
 
 					Inicio:        now.Add(-1 * time.Hour),

@@ -101,7 +101,6 @@ func (a *API) registrarVoto(w http.ResponseWriter, r *http.Request) {
 		voto.OrigemIP = strings.Split(r.RemoteAddr, ":")[0]
 	}
 
-	// Toda a lógica de antifraude, fila e persistência vive no serviço.
 	if err := a.service.RegistrarVoto(r.Context(), voto); err != nil {
 		status := statusFromError(err)
 		metrics.ObserveVoteRequest(status)
