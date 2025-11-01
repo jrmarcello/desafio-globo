@@ -72,11 +72,17 @@ docker-up:
 docker-down:
 	docker-compose down
 
+docker-rebuild:
+	docker compose up -d --build
+
 logs:
 	docker-compose logs -f api
 
 logs-worker:
 	docker-compose logs -f worker
+
+docker-clean:
+	docker-compose down -v --remove-orphans
 
 clean:
 	rm -rf $(BIN_DIR)

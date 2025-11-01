@@ -43,15 +43,16 @@ func Run(db *gorm.DB) error {
 				gen := ids.NewGenerator()
 				paredaoID := domain.ParedaoID(gen.New())
 				participantes := []domain.Participante{
-					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Alice", CriadoEm: now, AtualizadoEm: now},
-					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Bruno", CriadoEm: now, AtualizadoEm: now},
-					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Carla", CriadoEm: now, AtualizadoEm: now},
+					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Alice Melo", CriadoEm: now, AtualizadoEm: now},
+					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Bruno Silva", CriadoEm: now, AtualizadoEm: now},
+					{ID: domain.ParticipanteID(gen.New()), ParedaoID: paredaoID, Nome: "Carla Souza", CriadoEm: now, AtualizadoEm: now},
 				}
 
 				seed := domain.Paredao{
-					ID:            paredaoID,
-					Nome:          "Paredão de demonstração",
-					Descricao:     "Seed inicial para testes do frontend",
+					ID:        paredaoID,
+					Nome:      "Paredão 1 BBB",
+					Descricao: "Paredão padrão para setup inicial",
+
 					Inicio:        now.Add(-1 * time.Hour),
 					Fim:           now.Add(72 * time.Hour),
 					Participantes: participantes,

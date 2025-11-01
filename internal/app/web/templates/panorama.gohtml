@@ -7,6 +7,11 @@
         <strong>Sucesso!</strong>
         <p>{{.Message}}</p>
     </div>
+    <script>
+      setTimeout(function() {
+        window.location.reload();
+      }, 5000);
+    </script>
     {{end}}
 
     {{if .Error}}
@@ -41,32 +46,6 @@
         <p class="muted" style="margin-top:0.6rem;">Total geral: {{.TotalGeralDisplay}} votos</p>
         {{else}}
         <p class="muted">Ainda não há votos registrados neste paredão.</p>
-        {{end}}
-    </div>
-
-    <div class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
-        <h3>Histórico por hora</h3>
-        {{if .HoraError}}
-        <p class="muted">{{.HoraError}}</p>
-        {{else if .VotosHora}}
-        <table>
-            <thead>
-                <tr>
-                    <th>Horário</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{range .VotosHora}}
-                <tr>
-                    <td>{{.Intervalo}}</td>
-                    <td>{{.TotalDisplay}}</td>
-                </tr>
-                {{end}}
-            </tbody>
-        </table>
-        {{else}}
-        <p class="muted">Nenhum voto registrado por hora.</p>
         {{end}}
     </div>
     {{end}}

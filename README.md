@@ -2,11 +2,14 @@
 
 Projeto em Go que simula a votação do paredão do BBB: API enxuta, processamento assíncrono com Redis/Postgres, antifraude básico e automações para rodar localmente, em Docker ou em um cluster kind. O plano completo está em `docs/plano-execucao.md`; decisões e pendências ficam registradas no `COMMENTS.md`.
 
-## Pré-requisitos rápidos
+## Pré-requisitos
 
 - Go 1.25+
 - Docker + Docker Compose
 - Make
+- (Opcional para Kubernetes):
+  - kind (cluster local)
+  - helm (gerenciador de dependências)
 
 Crie seu arquivo de configuração:
 
@@ -16,15 +19,6 @@ cp .env.example .env
 
 ## Como rodar
 
-### Go puro
-
-```bash
-make tidy   # organizar dependências (execute quando tiver rede)
-make build  # compila API em bin/votacao-paredao-bbb-api
-make run    # sobe a API em :8080
-make run-worker  # em outro terminal, processa a fila
-```
-
 ### Docker Compose
 
 ```bash
@@ -32,6 +26,7 @@ make docker-up    # sobe API, worker, Postgres e Redis
 make logs         # acompanha os logs da API
 make logs-worker  # acompanha o worker
 make docker-down  # encerra o stack
+make docker-clean # remove containers, volumes e redes criados
 ```
 
 As migrations rodam automaticamente quando a API inicia (via gormigrate).

@@ -111,7 +111,7 @@ func (f *Frontend) handlePanorama(w http.ResponseWriter, r *http.Request) {
 	data := panoramaPageData{}
 
 	if status := r.URL.Query().Get("status"); status == "success" {
-		data.Message = "Voto registrado com sucesso!"
+		data.Message = "Voto registrado com sucesso! O resultado pode levar alguns segundos para ser computado."
 	}
 
 	if paredaoID == "" {
