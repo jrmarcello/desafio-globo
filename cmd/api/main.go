@@ -99,8 +99,16 @@ func main() {
 	mux.HandleFunc("/readyz", checker.ReadyHandler())
 	mux.Handle("/metrics", promhttp.Handler())
 
+	// Middleware para CSP permissivo (necessário para scripts inline com Tailwind)
+	cspHandler := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;")
+			next.ServeHTTP(w, r)
+		})
+	}
+
 	logger.Info("api ouvindo", "addr", cfg.HTTPAddress)
-	if err := http.ListenAndServe(cfg.HTTPAddress, mux); err != nil {
+	if err := http.ListenAndServe(cfg.HTTPAddress, cspHandler(mux)); err != nil {
 		logger.Fatal("erro no servidor", "err", err)
 	}
 }
