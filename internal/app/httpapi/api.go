@@ -16,11 +16,11 @@ import (
 
 // API empacota handlers HTTP ligados ao serviço de votação e ao logger.
 type API struct {
-	service *voting.Service
+	service domain.VotingService
 	logger  *slog.Logger
 }
 
-func New(service *voting.Service, logger *slog.Logger) *API {
+func New(service domain.VotingService, logger *slog.Logger) *API {
 	return &API{service: service, logger: logger}
 }
 

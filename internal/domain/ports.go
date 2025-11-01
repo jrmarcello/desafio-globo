@@ -42,3 +42,11 @@ type Antifraude interface {
 type Clock interface {
 	Agora() time.Time
 }
+
+type VotingService interface {
+	RegistrarVoto(ctx context.Context, voto Voto) error
+	ListarAtivos(ctx context.Context) ([]Paredao, error)
+	Parciais(ctx context.Context, id ParedaoID) ([]Parcial, error)
+	TotaisPorHora(ctx context.Context, id ParedaoID) ([]ParcialHora, error)
+	CriarParedao(ctx context.Context, paredao Paredao, participantes []Participante) (Paredao, error)
+}
