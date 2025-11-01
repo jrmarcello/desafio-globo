@@ -1,10 +1,8 @@
 {{define "panorama_body"}}
 <section class="panel">
-    <h2>Panorama do paredão</h2>
-
     {{if .Message}}
-    <div class="panel border-green-600 bg-gray-800 mt-4">
-        <strong>Sucesso!</strong>
+    <div class="panel" style="background: #f5f0ff; margin-top:1rem;">
+        <strong style="color: var(--bbb-roxo);">Sucesso!</strong>
         <p>{{.Message}}</p>
     </div>
     <script>
@@ -15,14 +13,14 @@
     {{end}}
 
     {{if .Error}}
-    <div class="panel border-red-600 bg-gray-800 mt-4">
-        <strong>Ops!</strong>
+    <div class="panel" style="background: #fff0f5; margin-top:1rem;">
+        <strong style="color: var(--bbb-rosa);">Ops!</strong>
         <p>{{.Error}}</p>
     </div>
     {{else}}
-    <p class="muted">Paredão: {{.ParedaoNome}}</p>
+    <p class="muted">{{.ParedaoNome}}</p>
 
-    <div class="panel mt-6 border-gray-600 bg-gray-800">
+    <div class="panel" style="margin-top:1.5rem;">
         <h3>Parciais por participante</h3>
         {{if .Participantes}}
         <table>
@@ -50,6 +48,6 @@
     </div>
     {{end}}
 
-    <a href="/vote" class="btn btn-secondary" style="margin-top:1.5rem; display:inline-block;">Votar novamente</a>
+    <a href="/vote" class="btn btn-primary" style="margin-top:1.5rem; display:inline-block;">Votar novamente</a>
 </section>
 {{end}}

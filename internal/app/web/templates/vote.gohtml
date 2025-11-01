@@ -4,15 +4,15 @@
     <p class="muted">Escolha um participante para registrar o voto.</p>
 
     {{if .Error}}
-    <div class="panel" style="border-color:#f85149; background:#1f2329; margin-top:1rem;">
-        <strong>Ops!</strong>
+    <div class="panel" style="background: #fff0f5; margin-top:1rem;">
+        <strong style="color: var(--bbb-rosa);">Ops!</strong>
         <p>{{.Error}}</p>
     </div>
     {{end}}
 
     {{if .Paredoes}}
         {{range .Paredoes}}
-        <article class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
+        <article class="panel" style="margin-top:1.5rem;">
             <h3>{{.Nome}}</h3>
             {{if .Descricao}}<p class="muted">{{.Descricao}}</p>{{end}}
             <p class="muted">
@@ -26,7 +26,7 @@
                 <div class="card-grid">
                     {{range .Participantes}}
                     <div class="participante-card">
-                        <img class="participante-avatar" src="https://ui-avatars.com/api/?name={{.Nome}}&background=30363d&color=f0f6fc" alt="Avatar de {{.Nome}}">
+                        <img class="participante-avatar" src="https://ui-avatars.com/api/?name={{.Nome}}&background=5001b3&color=ffffff&bold=true" alt="Avatar de {{.Nome}}">
                         <div class="participante-nome">{{.Nome}}</div>
                         <button type="submit" class="btn btn-eliminar" name="participante_id" value="{{.ID}}">Eliminar</button>
                     </div>

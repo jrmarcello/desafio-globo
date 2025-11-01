@@ -9,79 +9,98 @@
             <input type="password" id="token" name="token" required>
         </div>
         <button type="submit" class="btn btn-primary">Entrar</button>
-        {{if .TokenError}}<p class="text-red-500 mt-4">Token inválido. Tente novamente.</p>{{end}}
+        {{if .TokenError}}<p style="color: var(--bbb-rosa); margin-top:1rem; font-weight: 600;">Token inválido. Tente novamente.</p>{{end}}
     </form>
 </section>
 {{else}}
 <section class="panel">
-    <h2>Painel da produção</h2>
-    <p class="muted">Consolidado de votos por paredão, participante e hora.</p>
+    <h2>Painel da Produção</h2>
+    <p class="muted">Dados consolidados para análise da produção do programa.</p>
 
     {{if .Error}}
-    <div class="panel border-red-600 bg-gray-800 mt-4">
-        <strong>Ops!</strong>
+    <div class="panel" style="background: #fff0f5; margin-top:1rem;">
+        <strong style="color: var(--bbb-rosa);">Ops!</strong>
         <p>{{.Error}}</p>
     </div>
     {{else}}
         {{if .Paredoes}}
             {{range .Paredoes}}
-            <article class="panel mt-6 border-gray-600 bg-gray-800">
-                <h3>{{.Nome}}</h3>
-                <p class="muted">Total geral: {{.TotalDisplay}} votos</p>
+            <article class="panel" style="margin-top:2rem;">
+                <h3 style="margin-top: 0; color: var(--bbb-roxo);">📊 {{.Nome}}</h3>
+                
+                <!-- Total Geral -->
+                <div style="background: linear-gradient(135deg, var(--bbb-roxo) 0%, var(--bbb-roxo-claro) 100%); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                    <p style="margin: 0; color: var(--bbb-branco); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9;">Total Geral de Votos</p>
+                    <h2 style="margin: 0.5rem 0 0 0; color: var(--bbb-branco); font-size: 2.5rem; font-weight: 900;">{{.TotalDisplay}}</h2>
+                </div>
 
-                <h4>Participantes</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Participante</th>
-                            <th>Total</th>
-                            <th>Percentual</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .Participantes}}
-                        <tr>
-                            <td>{{.Nome}}</td>
-                            <td>{{.TotalDisplay}}</td>
-                            <td>{{.Percent}}</td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
+                <!-- Total por Participante -->
+                <div style="margin-bottom: 2rem;">
+                    <h4 style="color: var(--bbb-roxo); margin-bottom: 1rem;">👤 Total por Participante</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Participante</th>
+                                <th style="text-align: right;">Votos</th>
+                                <th style="text-align: right;">Percentual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .Participantes}}
+                            <tr>
+                                <td style="font-weight: 600;">{{.Nome}}</td>
+                                <td style="text-align: right; font-weight: 700; color: var(--bbb-roxo);">{{.TotalDisplay}}</td>
+                                <td style="text-align: right; font-weight: 600; color: var(--bbb-rosa);">{{.Percent}}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
 
-                <h4 style="margin-top:1.5rem;">Total por hora</h4>
-                {{if .VotosHora}}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Horário</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{range .VotosHora}}
-                        <tr>
-                            <td>{{.Intervalo}}</td>
-                            <td>{{.TotalDisplay}}</td>
-                        </tr>
-                        {{end}}
-                    </tbody>
-                </table>
-                {{else}}
-                <p class="muted">Nenhum voto registrado nas últimas horas.</p>
-                {{end}}
+                <!-- Total por Hora -->
+                <div>
+                    <h4 style="color: var(--bbb-roxo); margin-bottom: 1rem;">🕐 Total de Votos por Hora</h4>
+                    {{if .VotosHora}}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Horário</th>
+                                <th style="text-align: right;">Votos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{range .VotosHora}}
+                            <tr>
+                                <td>{{.Intervalo}}</td>
+                                <td style="text-align: right; font-weight: 700; color: var(--bbb-roxo);">{{.TotalDisplay}}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                    {{else}}
+                    <p class="muted" style="padding: 1rem; background: var(--bbb-cinza-claro); border-radius: 8px;">Nenhum voto registrado nas últimas horas.</p>
+                    {{end}}
+                </div>
             </article>
             {{end}}
         {{else}}
-        <p class="muted">Nenhum paredão disponível no momento.</p>
+        <p class="muted" style="margin-top:1.5rem; padding: 2rem; background: var(--bbb-cinza-claro); border-radius: 8px; text-align: center;">Nenhum paredão disponível no momento.</p>
         {{end}}
     {{end}}
 
-    <div class="panel" style="margin-top:1.5rem; border-color:#30363d; background:#1f2329;">
-        <h3>Links úteis</h3>
-        <ul>
-            <li><a href="/metrics" target="_blank" style="color:#58a6ff;">/metrics</a></li>
-            <li><a href="/readyz" target="_blank" style="color:#58a6ff;">/readyz</a></li>
+    <!-- Links Úteis -->
+    <div class="panel" style="margin-top:2rem; background: var(--bbb-cinza-claro);">
+        <h3 style="color: var(--bbb-roxo); margin-top: 0;">🔧 Links Úteis</h3>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">
+                <a href="/metrics" target="_blank" style="color: var(--bbb-roxo); text-decoration: none; font-weight: 600;">→ Métricas Prometheus</a>
+            </li>
+            <li style="margin-bottom: 0.5rem;">
+                <a href="/readyz" target="_blank" style="color: var(--bbb-roxo); text-decoration: none; font-weight: 600;">→ Health Check</a>
+            </li>
+            <li>
+                <a href="/vote" style="color: var(--bbb-roxo); text-decoration: none; font-weight: 600;">→ Voltar para Votação</a>
+            </li>
         </ul>
     </div>
 </section>
