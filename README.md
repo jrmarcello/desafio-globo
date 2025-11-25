@@ -1,4 +1,4 @@
-# Desafio BBB — Plano e execução
+# Desafio BBB
 
 Projeto em Go que simula a votação do paredão do BBB: API enxuta, processamento assíncrono com Redis/Postgres, antifraude básico e automações para rodar localmente, em Docker ou em um cluster kind. O plano completo está em `docs/plano-execucao.md`; decisões e pendências ficam registradas no `COMMENTS.md`.
 
